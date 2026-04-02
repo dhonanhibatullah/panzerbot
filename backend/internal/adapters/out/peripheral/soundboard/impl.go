@@ -56,9 +56,7 @@ func (s *soundboard) PlayTrack(ctx context.Context, idx int) (err error) {
 func (s *soundboard) StopTracks(ctx context.Context) (err error) {
 	const tag = path + "/StopTracks"
 
-	speaker.Lock()
 	speaker.Clear()
-	speaker.Unlock()
 	return nil
 }
 
@@ -114,8 +112,6 @@ func (s *soundboard) play(stream beep.StreamSeekCloser) error {
 		Volume:   dB,
 	}
 
-	speaker.Lock()
 	speaker.Play(vol)
-	speaker.Unlock()
 	return nil
 }

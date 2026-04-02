@@ -285,7 +285,5 @@ func (r *rtcMedia) handleRemoteAudio(peerID string, track *webrtc.TrackRemote) {
 		s = beep.Resample(4, config.RTCOpusSampleRate, r.speakerRate, streamer)
 	}
 
-	speaker.Lock()
 	speaker.Play(s)
-	speaker.Unlock()
 }
