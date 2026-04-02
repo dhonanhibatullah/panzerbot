@@ -9,6 +9,7 @@ import (
 	"github.com/dhonanhibatullah/panzerbot/backend/internal/config"
 	domainmodel "github.com/dhonanhibatullah/panzerbot/backend/internal/domain/model"
 	"github.com/dhonanhibatullah/panzerbot/backend/sound"
+	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
 	"github.com/peergum/go-rpio/v5"
 )
@@ -67,6 +68,12 @@ func (c *Core) NewInfrastructure(ctx context.Context) (err error) {
 	ginEngine := gin.New()
 	_ = ginEngine.SetTrustedProxies(nil)
 	ginEngine.Use(gin.Recovery())
+	ginEngine.Use(cors.New(cors.Config{
+		AllowOrigins:     config.CorsAllowedOrigins,
+		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+		AllowWebSockets:  true,
+	}))
 
 	c.infrastructure = &Infrastructure{
 		logger:      logger,

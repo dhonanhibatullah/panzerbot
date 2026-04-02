@@ -8,8 +8,11 @@ import (
 )
 
 var (
-	LogLevel   slog.Level = slog.LevelInfo
-	ServerPort int        = 443
+	LogLevel           slog.Level = slog.LevelInfo
+	ServerPort         int        = 6767
+	CorsAllowedOrigins []string   = []string{
+		"http://localhost:6969",
+	}
 
 	MotorRightAPin   rpio.Pin = 7
 	MotorRightBPin   rpio.Pin = 1
