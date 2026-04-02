@@ -41,6 +41,8 @@ func (b *BeepRtcStreamer) Stream(out [][2]float64) (n int, ok bool) {
 			out[n] = sample
 		case <-b.ctx.Done():
 			return n, false
+		default:
+			out[n] = [2]float64{}
 		}
 	}
 	return len(out), true
