@@ -30,6 +30,8 @@ func (c *Core) NewDelivery(ctx context.Context) (err error) {
 		rtcSignallingHttpHdl,
 	)
 
+	httpRoutes.Route()
+
 	c.delivery = &Delivery{
 		peripheralHttpHdl:    peripheralHttpHdl,
 		rtcSignallingHttpHdl: rtcSignallingHttpHdl,
