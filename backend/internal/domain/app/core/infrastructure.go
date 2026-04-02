@@ -67,13 +67,14 @@ func (c *Core) NewInfrastructure(ctx context.Context) (err error) {
 	gin.SetMode(gin.ReleaseMode)
 	ginEngine := gin.New()
 	_ = ginEngine.SetTrustedProxies(nil)
-	ginEngine.Use(gin.Recovery())
-	ginEngine.Use(cors.New(cors.Config{
-		AllowOrigins:     config.CorsAllowedOrigins,
-		AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-		AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
-		AllowWebSockets:  true,
-	}))
+	ginEngine.Use(
+		gin.Recovery(),
+		cors.New(cors.Config{
+			AllowOrigins:    config.CorsAllowedOrigins,
+			AllowMethods:    []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+			AllowHeaders:    []string{"Origin", "Content-Type", "Authorization"},
+			AllowWebSockets: true,
+		}))
 
 	c.infrastructure = &Infrastructure{
 		logger:      logger,
