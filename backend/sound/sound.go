@@ -15,7 +15,7 @@ var tracksFs embed.FS
 type Tracks struct {
 	Name     string
 	FileName string
-	Stream   beep.StreamSeekCloser
+	Buffer   *beep.Buffer
 	Format   beep.Format
 }
 
@@ -37,10 +37,13 @@ func LoadTracks() (tracks []Tracks, err error) {
 		if decodeErr != nil {
 			return nil, decodeErr
 		}
+		buf := beep.NewBuffer(format)
+		buf.Append(stream)
+		stream.Close()
 		tracks = append(tracks, Tracks{
 			Name:     formatName(fileName),
 			FileName: fileName,
-			Stream:   stream,
+			Buffer:   buf,
 			Format:   format,
 		})
 	}

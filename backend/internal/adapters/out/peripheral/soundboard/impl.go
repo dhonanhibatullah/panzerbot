@@ -17,10 +17,11 @@ import (
 const path = "adapters/out/peripheral/soundboard"
 
 type soundboard struct {
-	log    portsoutlogging.Log
-	mu     sync.Mutex
-	tracks []sound.Tracks
-	volume int
+	log         portsoutlogging.Log
+	mu          sync.Mutex
+	tracks      []sound.Tracks
+	speakerRate beep.SampleRate
+	volume      int
 }
 
 func New(
@@ -29,9 +30,10 @@ func New(
 	speakerRate beep.SampleRate,
 ) portsoutperipheral.Soundboard {
 	s := &soundboard{
-		log:    log,
-		tracks: tracks,
-		volume: 100,
+		log:         log,
+		tracks:      tracks,
+		speakerRate: speakerRate,
+		volume:      100,
 	}
 	if len(tracks) > 0 {
 		speaker.Init(
@@ -50,7 +52,7 @@ func (s *soundboard) PlayTrack(ctx context.Context, idx int) (err error) {
 	if idx < 0 || idx >= len(s.tracks) {
 		return nil
 	}
-	return s.play(s.tracks[idx].Stream)
+	return s.play(s.tracks[idx])
 }
 
 func (s *soundboard) StopTracks(ctx context.Context) (err error) {
@@ -92,11 +94,12 @@ func (s *soundboard) SetTrackVolume(ctx context.Context, volume int) (err error)
 	return nil
 }
 
-func (s *soundboard) play(stream beep.StreamSeekCloser) error {
-	const tag = path + "/play"
+func (s *soundboard) play(track sound.Tracks) error {
+	streamer := track.Buffer.Streamer(0, track.Buffer.Len())
 
-	if err := stream.Seek(0); err != nil {
-		return err
+	var src beep.Streamer = streamer
+	if track.Format.SampleRate != s.speakerRate {
+		src = beep.Resample(4, track.Format.SampleRate, s.speakerRate, streamer)
 	}
 
 	var dB float64
@@ -106,12 +109,10 @@ func (s *soundboard) play(stream beep.StreamSeekCloser) error {
 		dB = float64(s.volume-100) / 10.0
 	}
 
-	vol := &effects.Volume{
-		Streamer: stream,
+	speaker.Play(&effects.Volume{
+		Streamer: src,
 		Base:     2,
 		Volume:   dB,
-	}
-
-	speaker.Play(vol)
+	})
 	return nil
 }
