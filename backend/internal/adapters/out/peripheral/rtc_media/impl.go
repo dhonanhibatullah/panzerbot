@@ -272,7 +272,13 @@ func (r *rtcMedia) handleRemoteAudio(peerID string, track *webrtc.TrackRemote) {
 	}
 	r.mu.Unlock()
 
-	streamer := utils.NewBeepRtcStreamer(speakerCtx, track)
+	streamer := utils.NewBeepRtcStreamer(
+		speakerCtx,
+		track,
+		config.RTCBeepStreamerBuffer,
+		config.RTCOpusFrameBuffer,
+		config.RTCOpusSamplesPerChannel,
+	)
 
 	var s beep.Streamer = streamer
 	if r.speakerRate != config.RTCOpusSampleRate {

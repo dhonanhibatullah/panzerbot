@@ -39,12 +39,12 @@ func Run() int {
 		return 1
 	}
 
-	addr := fmt.Sprintf("0.0.0.0:%d", config.ServerPort)
+	addr := fmt.Sprintf("0.0.0.0:%d", config.AppPort)
 	c.wiring.logPort.Info(
 		ctx, tag,
 		"Running server...",
 		domainmodel.LogMeta{
-			"port": config.ServerPort,
+			"port": config.AppPort,
 		},
 	)
 

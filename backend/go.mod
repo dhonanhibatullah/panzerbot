@@ -82,6 +82,7 @@ require (
 	github.com/ebitengine/purego v0.7.1 // indirect
 	github.com/gin-gonic/gin v1.12.0
 	github.com/hajimehoshi/go-mp3 v0.3.4 // indirect
+	github.com/joho/godotenv v1.5.1
 	github.com/pkg/errors v0.9.1 // indirect
 	github.com/swaggo/files v1.0.1
 	github.com/swaggo/gin-swagger v1.6.1

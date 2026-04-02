@@ -3,20 +3,29 @@ package utils
 import (
 	"context"
 
-	config "github.com/dhonanhibatullah/panzerbot/backend/internal/config"
 	pionopus "github.com/pion/opus"
 	"github.com/pion/webrtc/v4"
 )
 
 type BeepRtcStreamer struct {
-	samples chan [2]float64
-	ctx     context.Context
+	samples              chan [2]float64
+	ctx                  context.Context
+	opusFrameBuffer      int
+	opusSamplePerChannel int
 }
 
-func NewBeepRtcStreamer(ctx context.Context, track *webrtc.TrackRemote) *BeepRtcStreamer {
+func NewBeepRtcStreamer(
+	ctx context.Context,
+	track *webrtc.TrackRemote,
+	streamerBufferSize int,
+	opusFrameBuffer int,
+	opusSamplePerChannel int,
+) *BeepRtcStreamer {
 	b := &BeepRtcStreamer{
-		samples: make(chan [2]float64, config.RTCBeepStreamerBuffer),
-		ctx:     ctx,
+		samples:              make(chan [2]float64, streamerBufferSize),
+		ctx:                  ctx,
+		opusFrameBuffer:      opusFrameBuffer,
+		opusSamplePerChannel: opusSamplePerChannel,
 	}
 	go b.readLoop(track)
 	return b
@@ -41,7 +50,7 @@ func (b *BeepRtcStreamer) Err() error { return nil }
 
 func (b *BeepRtcStreamer) readLoop(track *webrtc.TrackRemote) {
 	dec := pionopus.NewDecoder()
-	pcm := make([]float32, config.RTCOpusFrameBuffer)
+	pcm := make([]float32, b.opusFrameBuffer)
 
 	for {
 		select {
@@ -61,7 +70,7 @@ func (b *BeepRtcStreamer) readLoop(track *webrtc.TrackRemote) {
 		}
 
 		if isStereo {
-			for i := range config.RTCOpusSamplesPerChannel {
+			for i := range b.opusSamplePerChannel {
 				l := float64(pcm[i*2])
 				r := float64(pcm[i*2+1])
 				select {
@@ -72,7 +81,7 @@ func (b *BeepRtcStreamer) readLoop(track *webrtc.TrackRemote) {
 				}
 			}
 		} else {
-			for i := range config.RTCOpusSamplesPerChannel {
+			for i := range b.opusSamplePerChannel {
 				v := float64(pcm[i])
 				select {
 				case b.samples <- [2]float64{v, v}:

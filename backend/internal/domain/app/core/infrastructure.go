@@ -29,6 +29,18 @@ func (c *Core) NewInfrastructure(ctx context.Context) (err error) {
 		}),
 	)
 
+	err = config.LoadEnv()
+	if err != nil {
+		adaptersoutlogginggeneric.New(logger).Error(
+			ctx, tag,
+			"Failed to load .env",
+			domainmodel.LogMeta{
+				"error": err.Error(),
+			},
+		)
+		return err
+	}
+
 	err = rpio.Open()
 	if err != nil {
 		adaptersoutlogginggeneric.New(logger).Error(
@@ -38,6 +50,7 @@ func (c *Core) NewInfrastructure(ctx context.Context) (err error) {
 				"error": err.Error(),
 			},
 		)
+		return err
 	}
 
 	rpio.StartPwm()
