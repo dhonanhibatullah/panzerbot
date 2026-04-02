@@ -18,8 +18,12 @@ rm go1.26.1.linux-arm64.tar.gz
 
 # Update PATH and Check Version
 echo 'export PATH=$PATH:/usr/local/go/bin' >> ~/.bashrc
+echo 'export PATH=$PATH:$HOME/go/bin' >> ~/.bashrc
 source ~/.bashrc
 go version
+
+# Install swaggo
+go install github.com/swaggo/swag/cmd/swag@latest
 ```
 
 ### **3. Install NVM, Node.js, and npm**
