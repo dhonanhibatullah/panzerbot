@@ -30,6 +30,9 @@ func newOpusDecoder() (*opusDecoder, error) {
 }
 
 func (d *opusDecoder) decodeFloat32(data []byte, pcm []float32) (int, error) {
+	if len(data) == 0 || len(pcm) == 0 {
+		return 0, nil
+	}
 	n := C.opus_decode_float(
 		d.dec,
 		(*C.uchar)(unsafe.Pointer(&data[0])),
