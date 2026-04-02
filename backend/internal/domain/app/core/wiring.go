@@ -78,6 +78,7 @@ func (c *Core) NewWiring(ctx context.Context) (err error) {
 				"error": err.Error(),
 			},
 		)
+		return err
 	}
 
 	peripheralSvcPort := domainservicehttpperipheral.New(
