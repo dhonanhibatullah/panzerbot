@@ -1,17 +1,56 @@
 package utils
 
+/*
+#cgo pkg-config: opus
+#include <opus.h>
+#include <stdlib.h>
+*/
+import "C"
 import (
 	"context"
+	"fmt"
+	"unsafe"
 
-	pionopus "github.com/pion/opus"
 	"github.com/pion/webrtc/v4"
 )
 
+const opusDecodeSampleRate = 48000
+
+type opusDecoder struct {
+	dec *C.OpusDecoder
+}
+
+func newOpusDecoder() (*opusDecoder, error) {
+	var code C.int
+	dec := C.opus_decoder_create(C.opus_int32(opusDecodeSampleRate), 1, &code)
+	if code != C.OPUS_OK {
+		return nil, fmt.Errorf("opus_decoder_create: %d", code)
+	}
+	return &opusDecoder{dec: dec}, nil
+}
+
+func (d *opusDecoder) decodeFloat32(data []byte, pcm []float32) (int, error) {
+	n := C.opus_decode_float(
+		d.dec,
+		(*C.uchar)(unsafe.Pointer(&data[0])),
+		C.opus_int32(len(data)),
+		(*C.float)(unsafe.Pointer(&pcm[0])),
+		C.int(len(pcm)),
+		0,
+	)
+	if n < 0 {
+		return 0, fmt.Errorf("opus_decode_float error: %d", n)
+	}
+	return int(n), nil
+}
+
+func (d *opusDecoder) destroy() {
+	C.opus_decoder_destroy(d.dec)
+}
+
 type BeepRtcStreamer struct {
-	samples              chan [2]float64
-	ctx                  context.Context
-	opusFrameBuffer      int
-	opusSamplePerChannel int
+	samples chan [2]float64
+	ctx     context.Context
 }
 
 func NewBeepRtcStreamer(
@@ -22,12 +61,10 @@ func NewBeepRtcStreamer(
 	opusSamplePerChannel int,
 ) *BeepRtcStreamer {
 	b := &BeepRtcStreamer{
-		samples:              make(chan [2]float64, streamerBufferSize),
-		ctx:                  ctx,
-		opusFrameBuffer:      opusFrameBuffer,
-		opusSamplePerChannel: opusSamplePerChannel,
+		samples: make(chan [2]float64, streamerBufferSize),
+		ctx:     ctx,
 	}
-	go b.readLoop(track)
+	go b.readLoop(track, opusFrameBuffer)
 	return b
 }
 
@@ -50,9 +87,14 @@ func (b *BeepRtcStreamer) Stream(out [][2]float64) (n int, ok bool) {
 
 func (b *BeepRtcStreamer) Err() error { return nil }
 
-func (b *BeepRtcStreamer) readLoop(track *webrtc.TrackRemote) {
-	dec := pionopus.NewDecoder()
-	pcm := make([]float32, b.opusFrameBuffer)
+func (b *BeepRtcStreamer) readLoop(track *webrtc.TrackRemote, opusFrameBuffer int) {
+	dec, err := newOpusDecoder()
+	if err != nil {
+		return
+	}
+	defer dec.destroy()
+
+	pcm := make([]float32, opusFrameBuffer)
 
 	for {
 		select {
@@ -66,31 +108,18 @@ func (b *BeepRtcStreamer) readLoop(track *webrtc.TrackRemote) {
 			return
 		}
 
-		_, isStereo, err := dec.DecodeFloat32(pkt.Payload, pcm)
-		if err != nil {
+		n, err := dec.decodeFloat32(pkt.Payload, pcm)
+		if err != nil || n == 0 {
 			continue
 		}
 
-		if isStereo {
-			for i := range b.opusSamplePerChannel {
-				l := float64(pcm[i*2])
-				r := float64(pcm[i*2+1])
-				select {
-				case b.samples <- [2]float64{l, r}:
-				case <-b.ctx.Done():
-					return
-				default:
-				}
-			}
-		} else {
-			for i := range b.opusSamplePerChannel {
-				v := float64(pcm[i])
-				select {
-				case b.samples <- [2]float64{v, v}:
-				case <-b.ctx.Done():
-					return
-				default:
-				}
+		for i := range n {
+			v := float64(pcm[i])
+			select {
+			case b.samples <- [2]float64{v, v}:
+			case <-b.ctx.Done():
+				return
+			default:
 			}
 		}
 	}
