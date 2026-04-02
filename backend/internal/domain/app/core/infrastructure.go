@@ -70,10 +70,11 @@ func (c *Core) NewInfrastructure(ctx context.Context) (err error) {
 	ginEngine.Use(
 		gin.Recovery(),
 		cors.New(cors.Config{
-			AllowOrigins:    config.CorsAllowedOrigins,
-			AllowMethods:    []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
-			AllowHeaders:    []string{"Origin", "Content-Type", "Authorization"},
-			AllowWebSockets: true,
+			AllowOrigins:     config.CorsAllowedOrigins,
+			AllowMethods:     []string{"GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"},
+			AllowHeaders:     []string{"Origin", "Content-Type", "Authorization"},
+			AllowWebSockets:  true,
+			AllowCredentials: true,
 		}))
 
 	c.infrastructure = &Infrastructure{
