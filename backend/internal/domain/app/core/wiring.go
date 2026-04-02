@@ -71,7 +71,7 @@ func (c *Core) NewWiring(ctx context.Context) (err error) {
 		speakerSampleRate,
 	)
 	if err != nil {
-		c.wiring.logPort.Error(
+		logPort.Error(
 			ctx, tag,
 			"Failed to initiate RTC Media Port",
 			domainmodel.LogMeta{
