@@ -1,4 +1,4 @@
-package domainappwithstubs
+package domainappstubs
 
 import (
 	"context"
