@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
+import { useEffect, useState } from 'react';
 import { ControlClient, ControlClientState } from '@/lib/panzerbot/control';
 
 export type UseControlReturn = {
@@ -11,23 +11,23 @@ export type UseControlReturn = {
 };
 
 export function useControl(): UseControlReturn {
-    const clientRef = useRef<ControlClient | null>(null);
+    const [client, setClient] = useState<ControlClient | null>(null);
     const [state, setState] = useState<ControlClientState>('closed');
 
     useEffect(() => {
-        const client = new ControlClient({ onStateChange: setState });
-        clientRef.current = client;
-        client.connect();
-        return () => client.destroy();
+        const c = new ControlClient({ onStateChange: setState });
+        setClient(c);
+        c.connect();
+        return () => c.destroy();
     }, []);
 
     const sendMotor = (right: number, left: number) => {
-        clientRef.current?.sendMotor(right, left);
+        client?.sendMotor(right, left);
     };
 
     const sendServo = (pan: number, tilt: number) => {
-        clientRef.current?.sendServo(pan, tilt);
+        client?.sendServo(pan, tilt);
     };
 
-    return { state, sendMotor, sendServo, client: clientRef.current };
+    return { state, sendMotor, sendServo, client };
 }
