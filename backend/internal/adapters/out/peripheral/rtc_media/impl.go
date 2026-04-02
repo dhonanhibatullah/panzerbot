@@ -65,7 +65,10 @@ func New(
 	api := webrtc.NewAPI(webrtc.WithMediaEngine(&mediaEngine))
 
 	stream, err := mediadevices.GetUserMedia(mediadevices.MediaStreamConstraints{
-		Audio: func(c *mediadevices.MediaTrackConstraints) {},
+		Audio: func(c *mediadevices.MediaTrackConstraints) {
+			c.SampleRate = prop.Int(int(config.RTCOpusSampleRate))
+			c.ChannelCount = prop.Int(1)
+		},
 		Video: func(c *mediadevices.MediaTrackConstraints) {
 			c.DeviceID = prop.String(config.RTCVideoDevice)
 		},
