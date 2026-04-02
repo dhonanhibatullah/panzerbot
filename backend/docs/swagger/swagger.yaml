@@ -1,0 +1,132 @@
+definitions:
+  adaptersinhttpdto.CommonErrorResponse:
+    properties:
+      error:
+        example: A specific error message
+        type: string
+    type: object
+  adaptersinhttpdto.PeripheralGetSoundboardTrackResponse:
+    properties:
+      tracks:
+        example:
+        - Boom
+        - Fart
+        - Get Out
+        - Oi Oi Oi
+        - Outro
+        - Rizz
+        - Uwu
+        items:
+          type: string
+        type: array
+    type: object
+info:
+  contact: {}
+  description: The API documentation for Panzerbot API endpoints.
+  title: Panzerbot API
+  version: "1.0"
+paths:
+  /v1/peripheral/soundboard:
+    get:
+      description: Returns the list of available soundboard track names
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/adaptersinhttpdto.PeripheralGetSoundboardTrackResponse'
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Get soundboard tracks
+      tags:
+      - peripheral
+  /v1/peripheral/soundboard/{track_idx}:
+    post:
+      description: Plays a soundboard track by its index
+      parameters:
+      - description: Track index
+        example: 0
+        in: path
+        name: track_idx
+        required: true
+        type: integer
+      responses:
+        "204":
+          description: No Content
+        "400":
+          description: Bad Request
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Play a soundboard track
+      tags:
+      - peripheral
+  /v1/peripheral/soundboard/stop:
+    post:
+      description: Stops all currently playing soundboard tracks
+      responses:
+        "204":
+          description: No Content
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Stop all soundboard tracks
+      tags:
+      - peripheral
+  /v1/peripheral/ws:
+    get:
+      consumes:
+      - application/json
+      description: Establish a WebSocket connection to control motor speed and servo
+        angle in real-time
+      produces:
+      - application/json
+      responses:
+        "101":
+          description: Switching Protocols
+        "500":
+          description: Internal Server Error
+          schema:
+            additionalProperties:
+              type: string
+            type: object
+      summary: Peripheral WebSocket
+      tags:
+      - peripheral
+  /v1/rtc/ws:
+    get:
+      consumes:
+      - application/json
+      description: Establish a WebSocket connection for WebRTC signalling. The robot
+        sends an offer immediately after connecting. The peer replies with an answer
+        and exchanges ICE candidates to establish the media connection. The robot
+        streams camera and microphone; the peer may send audio back to the robot's
+        speaker.
+      produces:
+      - application/json
+      responses:
+        "101":
+          description: Switching Protocols
+        "500":
+          description: Internal Server Error
+          schema:
+            $ref: '#/definitions/adaptersinhttpdto.CommonErrorResponse'
+      summary: RTC Signalling WebSocket
+      tags:
+      - rtc
+swagger: "2.0"
