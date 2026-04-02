@@ -22,8 +22,7 @@ var (
 	ServoPanPin  rpio.Pin = 27
 	ServoTiltPin rpio.Pin = 22
 
-	RTCStunServer            string          = "stun:stun.l.google.com:19302"
-	RTCVideoDevice           string          = "/dev/video0"
+	RTCStunServer string = "stun:stun.l.google.com:19302"
 	RTCVideoBitRate          int             = 1_000_000
 	RTCOpusSampleRate        beep.SampleRate = 48000
 	RTCOpusSamplesPerChannel int             = 960

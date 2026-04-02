@@ -5,6 +5,7 @@ import "github.com/dhonanhibatullah/panzerbot/backend/internal/utils"
 var (
 	AppPort            int
 	CorsAllowedOrigins []string
+	RTCVideoDevice     string
 )
 
 func LoadEnv() (err error) {
@@ -20,6 +21,12 @@ func LoadEnv() (err error) {
 	}
 
 	CorsAllowedOrigins, err = utils.EnvGetStrings("CORS_ALLOWED_ORIGINS", nil)
+	if err != nil {
+		return err
+	}
+
+	defRTCVideoDevice := "/dev/video0"
+	RTCVideoDevice, err = utils.EnvGetString("RTC_VIDEO_DEVICE", &defRTCVideoDevice)
 	if err != nil {
 		return err
 	}
