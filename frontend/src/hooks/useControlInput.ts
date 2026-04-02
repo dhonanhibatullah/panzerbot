@@ -15,7 +15,7 @@ const KEY_MAP: Record<string, { right: number; left: number }> = {
 
 export function useControlInput(
     sendMotor: (right: number, left: number) => void,
-    speed: number = 0.7,
+    speed: number = 1.0,
 ): void {
     const sendMotorRef = useRef(sendMotor);
     sendMotorRef.current = sendMotor;

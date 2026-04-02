@@ -42,7 +42,7 @@ function rtcLabel(state: RTCClientState) {
 export default function Home() {
     const { state: ctrlState, sendMotor, sendServo, client } = useControl();
     const { state: rtcState, remoteStream, start, stop } = useWebRTC();
-    const servoRef = useRef({ pan: 0, tilt: 0 });
+    const servoRef = useRef({ pan: Math.PI / 2, tilt: Math.PI / 2 });
 
     useControlInput(sendMotor);
 
@@ -166,10 +166,10 @@ export default function Home() {
                                 </div>
                                 <input
                                     type="range"
-                                    min={-1.5}
-                                    max={1.5}
+                                    min={0}
+                                    max={Math.PI}
                                     step={0.01}
-                                    defaultValue={0}
+                                    defaultValue={Math.PI / 2}
                                     className="w-full accent-(--accent)"
                                     onChange={(e) => {
                                         servoRef.current.pan = parseFloat(e.target.value);
@@ -184,10 +184,10 @@ export default function Home() {
                                 </div>
                                 <input
                                     type="range"
-                                    min={-1.5}
-                                    max={1.5}
+                                    min={0}
+                                    max={Math.PI}
                                     step={0.01}
-                                    defaultValue={0}
+                                    defaultValue={Math.PI / 2}
                                     className="w-full accent-(--accent)"
                                     onChange={(e) => {
                                         servoRef.current.tilt = parseFloat(e.target.value);
