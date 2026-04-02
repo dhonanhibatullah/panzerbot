@@ -19,7 +19,7 @@ func LoadEnv() (err error) {
 		return err
 	}
 
-	CorsAllowedOrigins, err = utils.EnvGetStrings("FRONTEND_BASE_URL", nil)
+	CorsAllowedOrigins, err = utils.EnvGetStrings("CORS_ALLOWED_ORIGINS", nil)
 	if err != nil {
 		return err
 	}
