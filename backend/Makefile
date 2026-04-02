@@ -6,6 +6,7 @@ swagger:
 build: swagger
 	@rm -rf build
 	@mkdir -p build
+	@cp .env build/.env
 	@go build -o build/panzerbot cmd/core/main.go
 
 build_stubs: swagger
