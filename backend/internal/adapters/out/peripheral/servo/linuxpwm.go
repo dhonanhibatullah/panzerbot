@@ -7,6 +7,7 @@ import (
 	"os"
 	"strconv"
 
+	domainmodel "github.com/dhonanhibatullah/panzerbot/backend/internal/domain/model"
 	portsoutlogging "github.com/dhonanhibatullah/panzerbot/backend/internal/ports/out/logging"
 	portsoutperipheral "github.com/dhonanhibatullah/panzerbot/backend/internal/ports/out/peripheral"
 )
@@ -45,7 +46,13 @@ func (s *servoLinuxPwm) SetAngle(ctx context.Context, angle float64) (err error)
 
 	pulseNs := int(pulseMinNs + (angle/math.Pi)*float64(pulseMaxNs-pulseMinNs))
 	if err = s.writeFile("duty_cycle", strconv.Itoa(pulseNs)); err != nil {
-		s.log.Error(ctx, tag, "Failed to set duty cycle", nil)
+		s.log.Error(
+			ctx, tag,
+			"Failed to set duty cycle",
+			domainmodel.LogMeta{
+				"error": err.Error(),
+			},
+		)
 		return err
 	}
 	return nil
