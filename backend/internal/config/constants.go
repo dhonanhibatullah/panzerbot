@@ -27,10 +27,16 @@ var (
 	MotorLeftAPin  rpio.Pin = 22
 	MotorLeftBPin  rpio.Pin = 27
 
-	ServoPanPin    rpio.Pin = 12
-	ServoTiltPin   rpio.Pin = 13
+	ServoPanPin    rpio.Pin = 18
+	ServoTiltPin   rpio.Pin = 19
 	PwmCycleLength uint32   = 20_000
 	PwmFrequency   int      = 50 * int(PwmCycleLength)
+
+	// Linux sysfs PWM chip paths.
+	// On modern RPi OS (kernel 5.x+) each PWM channel is its own pwmchip.
+	// Verify with: ls /sys/class/pwm/
+	ServoPanPwmChip  string = "/sys/class/pwm/pwmchip0" // GPIO 18 (PWM0)
+	ServoTiltPwmChip string = "/sys/class/pwm/pwmchip2" // GPIO 19 (PWM1)
 
 	RTCStunServer            string          = "stun:stun.l.google.com:19302"
 	RTCVideoBitRate          int             = 1_000_000

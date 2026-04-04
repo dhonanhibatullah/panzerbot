@@ -49,13 +49,13 @@ func (c *Core) NewWiring(ctx context.Context) (err error) {
 	)
 	servoPanPort := adaptersoutperipheralservo.NewLinuxPwm(
 		logPort,
-		// &config.ServoPanPin,
+		config.ServoPanPwmChip,
 		0,
 	)
 	servoTiltPort := adaptersoutperipheralservo.NewLinuxPwm(
 		logPort,
-		// &config.ServoTiltPin,
-		1,
+		config.ServoTiltPwmChip,
+		0,
 	)
 	servoPanPort.SetAngle(ctx, math.Pi/2.0)
 	servoTiltPort.SetAngle(ctx, math.Pi/2.0)
