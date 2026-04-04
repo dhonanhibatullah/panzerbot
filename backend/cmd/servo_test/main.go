@@ -24,16 +24,16 @@ func main() {
 
 	// Move to 0 degrees (0.5ms)
 	pin.DutyCycle(500, 20_000)
-	fmt.Print("0 DEGREE")
+	fmt.Println("0 DEGREE")
 	time.Sleep(3 * time.Second)
 
 	// Move to 90 degrees (1.5ms)
 	pin.DutyCycle(1500, 20_000)
-	fmt.Print("90 DEGREE")
+	fmt.Println("90 DEGREE")
 	time.Sleep(3 * time.Second)
 
 	// Move to 180 degrees (2.5ms)
 	pin.DutyCycle(2500, 20_000)
-	fmt.Print("180 DEGREE")
+	fmt.Println("180 DEGREE")
 	time.Sleep(3 * time.Second)
 }
