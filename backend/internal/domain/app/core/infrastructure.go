@@ -62,10 +62,10 @@ func (c *Core) NewInfrastructure(ctx context.Context) (err error) {
 	config.MotorLeftBPin.Output()
 	// config.MotorLeftPwmPin.Mode(rpio.Pwm)
 	// config.MotorLeftPwmPin.Freq(config.PwmFrequency)
-	config.ServoPanPin.Mode(rpio.Pwm)
-	config.ServoPanPin.Freq(config.PwmFrequency)
-	config.ServoTiltPin.Mode(rpio.Pwm)
-	config.ServoTiltPin.Freq(config.PwmFrequency)
+	// config.ServoPanPin.Mode(rpio.Pwm)
+	// config.ServoPanPin.Freq(config.PwmFrequency)
+	// config.ServoTiltPin.Mode(rpio.Pwm)
+	// config.ServoTiltPin.Freq(config.PwmFrequency)
 
 	soundTracks, err := sound.LoadTracks()
 	if err != nil {

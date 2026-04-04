@@ -47,13 +47,15 @@ func (c *Core) NewWiring(ctx context.Context) (err error) {
 		&config.MotorLeftAPin,
 		&config.MotorLeftBPin,
 	)
-	servoPanPort := adaptersoutperipheralservo.NewPwm(
+	servoPanPort := adaptersoutperipheralservo.NewLinuxPwm(
 		logPort,
-		&config.ServoPanPin,
+		// &config.ServoPanPin,
+		0,
 	)
-	servoTiltPort := adaptersoutperipheralservo.NewPwm(
+	servoTiltPort := adaptersoutperipheralservo.NewLinuxPwm(
 		logPort,
-		&config.ServoTiltPin,
+		// &config.ServoTiltPin,
+		1,
 	)
 	servoPanPort.SetAngle(ctx, math.Pi/2.0)
 	servoTiltPort.SetAngle(ctx, math.Pi/2.0)
