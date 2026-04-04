@@ -2,6 +2,7 @@ package domainappcore
 
 import (
 	"context"
+	"math"
 
 	adaptersoutlogginggeneric "github.com/dhonanhibatullah/panzerbot/backend/internal/adapters/out/logging/generic"
 	adaptersoutperipheralmotor "github.com/dhonanhibatullah/panzerbot/backend/internal/adapters/out/peripheral/motor"
@@ -36,28 +37,26 @@ func (c *Core) NewWiring(ctx context.Context) (err error) {
 		c.infrastructure.logger,
 	)
 
-	motorRightPort := adaptersoutperipheralmotor.New(
+	motorRightPort := adaptersoutperipheralmotor.NewNoPwm(
 		logPort,
 		&config.MotorRightAPin,
 		&config.MotorRightBPin,
-		&config.MotorRightPwmPin,
-		config.PwmCycleLength,
 	)
-	motorLeftPort := adaptersoutperipheralmotor.New(
+	motorLeftPort := adaptersoutperipheralmotor.NewNoPwm(
 		logPort,
 		&config.MotorLeftAPin,
 		&config.MotorLeftBPin,
-		&config.MotorLeftPwmPin,
-		config.PwmCycleLength,
 	)
-	servoPanPort := adaptersoutperipheralservo.New(
+	servoPanPort := adaptersoutperipheralservo.NewPwm(
 		logPort,
 		&config.ServoPanPin,
 	)
-	servoTiltPort := adaptersoutperipheralservo.New(
+	servoTiltPort := adaptersoutperipheralservo.NewPwm(
 		logPort,
 		&config.ServoTiltPin,
 	)
+	servoPanPort.SetAngle(ctx, math.Pi/2.0)
+	servoTiltPort.SetAngle(ctx, math.Pi/2.0)
 
 	speakerSampleRate := c.infrastructure.soundTracks[0].Format.SampleRate
 
