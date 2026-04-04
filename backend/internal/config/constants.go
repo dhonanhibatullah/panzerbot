@@ -32,11 +32,12 @@ var (
 	PwmCycleLength uint32   = 20_000
 	PwmFrequency   int      = 50 * int(PwmCycleLength)
 
-	// Linux sysfs PWM chip paths.
-	// On modern RPi OS (kernel 5.x+) each PWM channel is its own pwmchip.
+	// Linux sysfs PWM chip path.
+	// Both channels share pwmchip0 on this kernel version:
+	//   pwmchip0/pwm0 → GPIO 18 (PWM0, pan)
+	//   pwmchip0/pwm1 → GPIO 19 (PWM1, tilt)
 	// Verify with: ls /sys/class/pwm/
-	ServoPanPwmChip  string = "/sys/class/pwm/pwmchip0" // GPIO 18 (PWM0)
-	ServoTiltPwmChip string = "/sys/class/pwm/pwmchip2" // GPIO 19 (PWM1)
+	ServoPwmChip string = "/sys/class/pwm/pwmchip0"
 
 	RTCStunServer            string          = "stun:stun.l.google.com:19302"
 	RTCVideoBitRate          int             = 1_000_000
