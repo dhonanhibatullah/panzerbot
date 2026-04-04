@@ -53,7 +53,7 @@ func (c *Core) NewInfrastructure(ctx context.Context) (err error) {
 		return err
 	}
 
-	rpio.StartPwm()
+	// rpio.StartPwm()
 	config.MotorRightAPin.Output()
 	config.MotorRightBPin.Output()
 	// config.MotorRightPwmPin.Mode(rpio.Pwm)
@@ -101,6 +101,6 @@ func (c *Core) NewInfrastructure(ctx context.Context) (err error) {
 }
 
 func (c *Core) InfrastructureCleanup() {
-	rpio.StopPwm()
+	// rpio.StopPwm()
 	rpio.Close()
 }
